@@ -1,14 +1,22 @@
-#container{
-    --GAP:0.1vmin;
+#wrapper{
     width: 100%;
     height: 100vh;
-    display: grid;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#container{
+    --GAP:0.3vmin;
+    --C_WIDTH:700px;
+    width: var(--C_WIDTH);
+    height: 300px;
+    display: flex;
     align-items: flex-end;
-    grid-template-columns: repeat(var(--length),1fr);
     gap: var(--GAP);
+    position: relative;
 }
 #bar{
-    --width:calc((100% - (var(--GAP) * (var(--length) - 1))) / var(--length));
+    --width:calc((var(--C_WIDTH) - (var(--GAP) * (var(--length) - 1))) / var(--length));
     width: var(--width);
     background: #33b9ff;
     position: absolute;

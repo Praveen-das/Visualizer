@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import './visualizer.css'
-import { mergeSort } from '../Algorithms/SortingAlgorithms.jsx'
+import { mergeSort } from '../Algorithms/MergeSort.jsx'
 
 function Visualizer() {
-    const ARRAY_SIZE = 500
+    const ARRAY_SIZE = 100
     const SORTING_SPEED_IN_MS = 10
+    window.speed = SORTING_SPEED_IN_MS
     const [graph, setGraph] = useState([])
 
     useEffect(() => {
@@ -16,20 +17,14 @@ function Visualizer() {
 
     async function sortArray() {
         let array = graph
-        let auxArray = array.slice()
-        await mergeSort(array, auxArray, SORTING_SPEED_IN_MS)
-        setGraph([...array])
+        await mergeSort(array, SORTING_SPEED_IN_MS)
     }
 
     return (
         <>
-            <button onClick={() => sortArray()}>sort</button>
-            <div id="container">
-                {/* {
-                    graph.map((bar, index) =>
-                        <div key={index} className='cell' style={{ '--index': bar.index }} />
-                    )
-                } */}
+            <div id="wrapper">
+                <button onClick={() => sortArray()}>sort</button>
+                <div id="container"></div>
             </div>
         </>
     )

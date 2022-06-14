@@ -1,5 +1,4 @@
-
-export const mergeSort = async (array, auxArray, speed) => {
+export const mergeSort = async (array) => {
     const length = array.length
     if (array.length === 1) return array
 
@@ -7,12 +6,12 @@ export const mergeSort = async (array, auxArray, speed) => {
     const left = array.slice(0, middleIdx)
     const right = array.slice(middleIdx)
 
-    await mergeSort(left, auxArray)
-    await mergeSort(right, auxArray)
-    await merge(array, auxArray, left, right, speed)
+    await mergeSort(left)
+    await mergeSort(right)
+    await merge(array, left, right)
 }
 
-async function merge(array, auxArray, left, right, speed) {
+async function merge(array, left, right) {
     let l = 0,
         r = 0,
         k = 0
@@ -54,8 +53,8 @@ async function merge(array, auxArray, left, right, speed) {
         k++
     }
 
-    function wait() {
-        return new Promise(res => setTimeout(() => res(true), speed))
-    }
 }
 
+function wait() {
+    return new Promise(res => setTimeout(() => res(true), window.speed))
+}

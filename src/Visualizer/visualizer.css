@@ -7,9 +7,9 @@
 }
 #container{
     --GAP:0.3vmin;
-    --C_WIDTH:700px;
+    --C_WIDTH:100%;
     width: var(--C_WIDTH);
-    height: 300px;
+    height: 200px;
     display: flex;
     align-items: flex-end;
     gap: var(--GAP);
@@ -18,10 +18,10 @@
 #bar{
     --width:calc((var(--C_WIDTH) - (var(--GAP) * (var(--length) - 1))) / var(--length));
     width: var(--width);
-    background: #33b9ff;
+    background: hsl(201, 100%, 60%);
     position: absolute;
     left: calc((var(--index) * var(--width )) + (var(--index) * var(--GAP)));
-    /* transition: 10ms; */
+    transition: 100ms;
     text-align: center;
 }
 button{

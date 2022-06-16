@@ -3,8 +3,8 @@ import './visualizer.css'
 import { mergeSort } from '../Algorithms/MergeSort.jsx'
 
 function Visualizer() {
-    const ARRAY_SIZE = 100
-    const SORTING_SPEED_IN_MS = 10
+    const ARRAY_SIZE = 600
+    const SORTING_SPEED_IN_MS = 5
     window.speed = SORTING_SPEED_IN_MS
     const [graph, setGraph] = useState([])
 
@@ -17,7 +17,9 @@ function Visualizer() {
 
     async function sortArray() {
         let array = graph
-        await mergeSort(array, SORTING_SPEED_IN_MS)
+        let a = graph.slice()
+        const animations = []
+        await mergeSort(array, animations)
     }
 
     return (

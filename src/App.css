@@ -19,7 +19,7 @@ body{
     background: hsl(21, 100%, 60%);
     position: absolute;
     bottom: 0;
-    left: calc((var(--index) * var(--BAR_WIDTH )) + (var(--index) * var(--GAP)));
+    left: calc((var(--INDEX) * var(--BAR_WIDTH )) + (var(--INDEX) * var(--GAP)));
     text-align: center;
     font-size: 12px;
     font-family: Arial, Helvetica, sans-serif;

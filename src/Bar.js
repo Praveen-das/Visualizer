@@ -12,7 +12,7 @@ export default class Bar {
         this.#value = value
         this.#speed = speed
         this.#element.style.setProperty('--value', `${this.#value}%`)
-        this.#element.style.setProperty('--index', this.#index)
+        this.#element.style.setProperty('--INDEX', this.#index)
 
         this.marker = this.#element.children.marker
         this.swapper = this.#element.children.swapper
@@ -81,6 +81,6 @@ export default class Bar {
 
     set index(value) {
         this.#index = value
-        this.#element.style.setProperty('--index', value)
+        this.#element.style.setProperty('--INDEX', value)
     }
 }

@@ -3,35 +3,43 @@
     height: 100vh;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-end;
+    margin: 0 auto;
 }
 #container{
     --GAP:0.3vmin;
     --C_WIDTH:100%;
     width: var(--C_WIDTH);
-    height: 200px;
-    display: flex;
-    align-items: flex-end;
-    gap: var(--GAP);
+    height: 50%;
     position: relative;
 }
 #bar{
-    --width:calc((var(--C_WIDTH) - (var(--GAP) * (var(--length) - 1))) / var(--length));
-    width: var(--width);
-    background: hsl(201, 100%, 60%);
+    --WIDTH:calc((var(--C_WIDTH) - (var(--GAP) * (var(--LENGTH) - 1))) / var(--LENGTH));
+    width: var(--WIDTH);
+    background: #00ffcc;
     position: absolute;
-    left: calc((var(--index) * var(--width )) + (var(--index) * var(--GAP)));
-    transition: 100ms;
+    bottom:0%;
+    left: calc((var(--INDEX) * var(--WIDTH )) + (var(--INDEX) * var(--GAP)));
     text-align: center;
+    z-index: 1;
+    transition: var(--ANIMATION_TIME) ease-in-out;
 }
 button{
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 22px;
+    font-size: 25px;
     font-weight: 800;
     position: absolute;
     left: 0;
     right: 0;
-    top: 10px;
+    top: 50px;
     margin: 0 auto;
     width: 100px;
+    aspect-ratio: 1;
+    border: none;
+    border-radius: 50%;
+    background: hsl(0, 0%, 39%);
+    box-shadow: 0 0 50px 50px #222;
+    color: white;
+    cursor: pointer;
+    z-index: 300;
 }

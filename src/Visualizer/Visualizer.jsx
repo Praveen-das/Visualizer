@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from 'react'
 import './visualizer.css'
-import { mergeSort } from '../Algorithms/MergeSort.jsx'
+// import { quickSort } from '../Algorithms/QuickSort.jsx'
+import quickSort from '../Algorithms/QuickSort' 
 
 function Visualizer() {
-    const ARRAY_SIZE = 50
-    const [animationSpeed, setAnimationSpeed] = useState(10)
-    
+    const ARRAY_SIZE = 10
+    const [animationSpeed, setAnimationSpeed] = useState(500)
+
     const [progress, setProgress] = useState()
     const [graph, setGraph] = useState([])
-    
+
     useEffect(() => {
         const container = document.getElementById('container')
-        const GAP = ARRAY_SIZE >= 100 ? '0.5vmin' : 
-        ARRAY_SIZE >= 200 ? '0.3vmin ':'1vmin'
+        const GAP = ARRAY_SIZE >= 100 ? '0.1vmin' :
+            ARRAY_SIZE >= 200 ? '0.3vmin ' : '1vmin'
 
         container.style.setProperty('--LENGTH', ARRAY_SIZE)
         container.style.setProperty('--GAP', GAP)
@@ -22,11 +23,12 @@ function Visualizer() {
     }, [animationSpeed])
 
     function sortArray() {
-        mergeSort(graph, animationSpeed, setProgress)
+        quickSort(graph, animationSpeed, setProgress)
+        console.log(graph);
     }
 
     useEffect(() => {
-        console.log(progress);
+        // console.log(progress);
     }, [progress])
 
     return (
@@ -56,6 +58,7 @@ const createUnsortedArray = (size, container) => {
         element.id = 'bar'
         element.style.height = `${RANDOM_SIZE}%`
         element.style.setProperty('--INDEX', i)
+        // element.innerText = RANDOM_SIZE
         const obj = {
             element: element,
             value: RANDOM_SIZE,

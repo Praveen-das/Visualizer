@@ -7,22 +7,33 @@
     margin: 0 auto;
 }
 #container{
-    --GAP:0.3vmin;
+    --GAP:0;
     --C_WIDTH:100%;
     width: var(--C_WIDTH);
-    height: 50%;
+    height: 100%;
     position: relative;
 }
 #bar{
+    --BAR_COLOR:#00ffcc;
     --WIDTH:calc((var(--C_WIDTH) - (var(--GAP) * (var(--LENGTH) - 1))) / var(--LENGTH));
     width: var(--WIDTH);
-    background: #00ffcc;
+    background: var(--BAR_COLOR);
     position: absolute;
     bottom:0%;
     left: calc((var(--INDEX) * var(--WIDTH )) + (var(--INDEX) * var(--GAP)));
     text-align: center;
     z-index: 1;
-    transition: var(--ANIMATION_TIME) ease-in-out;
+    transition: all var(--ANIMATION_TIME) ease-in-out ,background;
+}
+.marker{
+    background: rgb(255, 255, 255) !important; 
+}
+.active{
+    /* bottom: 100px !important; */
+    background: rgb(43, 255, 0) !important; 
+}
+.pivot{
+    background: #ff0101 !important;
 }
 button{
     font-family: Arial, Helvetica, sans-serif;

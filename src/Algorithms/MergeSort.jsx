@@ -1,4 +1,4 @@
-export const mergeSort = async (array, animationSpeed,progress) => {
+export default async function mergeSort (array, animationSpeed,progress) {
     const animations = []
     let count = 1
     mergeHelper(array, animationSpeed, animations)

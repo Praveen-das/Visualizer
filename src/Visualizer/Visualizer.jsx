@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import './visualizer.css'
-// import { quickSort } from '../Algorithms/QuickSort.jsx'
-import quickSort from '../Algorithms/QuickSort' 
+import mergeSort from '../Algorithms/MergeSort'
+import quickSort from '../Algorithms/QuickSort'
+import radixSort from '../Algorithms/RadixSort'
 
 function Visualizer() {
-    const ARRAY_SIZE = 10
-    const [animationSpeed, setAnimationSpeed] = useState(500)
+    const [animationSpeed, setAnimationSpeed] = useState(1)
+    const ARRAY_SIZE = 1000
+    const MAX_DIGITS = 2
+    const maxDigits = parseInt(String(1).padEnd(MAX_DIGITS + 1, 0))
 
     const [progress, setProgress] = useState()
     const [graph, setGraph] = useState([])
@@ -18,13 +21,16 @@ function Visualizer() {
         container.style.setProperty('--LENGTH', ARRAY_SIZE)
         container.style.setProperty('--GAP', GAP)
         container.style.setProperty('--ANIMATION_TIME', `${animationSpeed}ms`)
-        const array = createUnsortedArray(ARRAY_SIZE, container)
+
+        const array = createUnsortedArray(ARRAY_SIZE, maxDigits, container)
         setGraph(array)
-    }, [animationSpeed])
+
+    }, [animationSpeed, maxDigits])
 
     function sortArray() {
-        quickSort(graph, animationSpeed, setProgress)
-        console.log(graph);
+        console.time()
+        radixSort(graph, animationSpeed,maxDigits, setProgress)
+        console.timeEnd()
     }
 
     useEffect(() => {
@@ -50,15 +56,16 @@ function Visualizer() {
 
 export default Visualizer
 
-const createUnsortedArray = (size, container) => {
+const createUnsortedArray = (size, maxDigits, container) => {
     let array = []
     for (let i = 0; i < size; i++) {
-        const RANDOM_SIZE = Math.floor((Math.random() * (100 - 5)) + 5)
+        const RANDOM_SIZE = Math.floor((Math.random() * (maxDigits - 10)) + 10)
         const element = document.createElement('div')
         element.id = 'bar'
-        element.style.height = `${RANDOM_SIZE}%`
+        element.style.height = `${(RANDOM_SIZE / maxDigits) * 100}%`
         element.style.setProperty('--INDEX', i)
-        // element.innerText = RANDOM_SIZE
+        if (size <= 20)
+            element.innerText = RANDOM_SIZE
         const obj = {
             element: element,
             value: RANDOM_SIZE,

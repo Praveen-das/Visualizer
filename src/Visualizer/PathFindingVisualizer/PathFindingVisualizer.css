@@ -1,0 +1,81 @@
+#PathFindingVisualizer{
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-wrap: wrap;
+    background: rgb(247, 247, 247);
+    overflow: hidden;
+}
+#cell{
+    width: calc(100% / var(--COLUMNS));
+    aspect-ratio: 1;
+    background: rgb(247, 247, 247);
+    outline: 1px dashed rgb(187, 187, 187);
+    user-select: none;
+}
+.wall{
+    outline: none !important;
+    animation: wall 0.1s forwards;
+}
+.none{
+    animation: removewall 0.1s forwards !important;
+}
+
+@keyframes wall{
+    0%{
+        transform: scale(0);
+        border-radius: 50%;
+        background: rgb(247, 247, 247);
+    }
+    100%{
+        transform: scale(1);
+        border-radius: 0%;
+        background: rgb(48, 48, 48);
+    }
+}
+@keyframes removewall{
+    0%{
+        transform: scale(1);
+        border-radius: 0%;
+        background: rgb(48, 48, 48);
+    }
+    100%{
+        transform: scale(0);
+        border-radius: 50%;
+        background: rgb(247, 247, 247);
+    }
+}
+/* @keyframes remove_wall{
+    from{
+        transform: scale(1);
+        border-radius: 0%;
+    }
+    to{
+        transform: scale(0);
+        border-radius: 50%;
+    }
+} */
+.point1{
+    width: 100%;
+    height: 100%;
+}
+.animate{
+    transform-origin: bottom;
+    animation: point1 0.2s infinite;
+}
+.point1 svg{
+    transform: translate(-3px,-10px);
+    fill: red;
+}
+
+@keyframes point1{
+    0%{
+        transform: scale(1);
+    }
+    50%{
+        transform: scale(1.2);        
+    }
+    100%{
+        transform: scale(1);
+    }
+}

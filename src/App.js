@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import './App.css';
 import Graph from './Graph';
-import Visualizer from './Visualizer/Visualizer';
+import PathFindingVisualizer from './Visualizer/PathFindingVisualizer/PathFindingVisualizer';
+import SortingVisualizer from './Visualizer/SortingVisualizer/SortingVisualizer';
 
 function App() {
   // const mounted = useRef(false)
@@ -21,9 +22,7 @@ function App() {
 
   return (
     <>
-      {/* <button onClick={() => graph.mergeSort()}>Sort</button>
-      <div id="container" /> */}
-      <Visualizer />
+      <PathFindingVisualizer />
     </>
   );
 }

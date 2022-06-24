@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import './visualizer.css'
-import mergeSort from '../Algorithms/MergeSort'
-import quickSort from '../Algorithms/QuickSort'
-import radixSort from '../Algorithms/RadixSort'
+import './SortingVisualizer.css'
+import mergeSort from '../../Algorithms/SortingAlgorithms/MergeSort'
+import quickSort from '../../Algorithms/SortingAlgorithms/QuickSort'
+import radixSort from '../../Algorithms/SortingAlgorithms/RadixSort'
 
 function Visualizer() {
     const [animationSpeed, setAnimationSpeed] = useState(1)

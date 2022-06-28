@@ -34,6 +34,9 @@ function PathFindingVisualizer() {
                 if (e.button !== 0) return
                 if (cell.point1) action = 'MOVE_POINT'
                 handleCellActions(cell, action)
+                    // console.log(cell.previousCell);
+                }
+            }
             }
             cell.cell.onpointerenter = () => active && handleCellActions(cell, action)
             if ((cell.x === 25 && cell.y === 25) && cell.point1 == null) setPoint1(cell)

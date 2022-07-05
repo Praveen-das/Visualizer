@@ -19,7 +19,6 @@ function App() {
   //   algorithms.sortArray('asdad')
   //   return () => mounted.current = true
   // }, [])
-
   return (
     <>
       <PathFindingVisualizer />

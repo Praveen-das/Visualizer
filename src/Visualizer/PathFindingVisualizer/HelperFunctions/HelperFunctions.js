@@ -59,7 +59,7 @@ export const tracePreviousCell = (cell) => {
         }
         tracePreviousCell(cell.previousCell)
         cell.cell.append(shortestPath)
-    }, 10)
+    }, 5)
 }
 
 const setPoint = (cell, x, y, columnsX, rowsY, name) => {
@@ -75,8 +75,8 @@ const setPoint = (cell, x, y, columnsX, rowsY, name) => {
 }
 
 export const generateGrid = () => {
-    let rows = Math.floor(window.innerWidth / 30),
-        columns = Math.floor(window.innerHeight / 30),
+    let rows = Math.floor(window.innerWidth /15),
+        columns = Math.floor(window.innerHeight /15),
         grid = [],
         container = document.getElementById('PathFindingVisualizer')
 
@@ -109,7 +109,8 @@ function createCell(x, y, columns, rows, container) {
         x,
         y,
         previousCell: null,
-        distance: 1
+        distance: 1,
+        deadEnd: false
     }
     return cell
 }

@@ -12,7 +12,6 @@ export const dijkstra = (grid) => {
     }
 
     for (let point of visitedCells) {
-        debugger
         if (point.visited) continue
         if (point.wall) continue
         if (point.point2) {
@@ -23,31 +22,27 @@ export const dijkstra = (grid) => {
 
         if (point.x > 0) {
             //left
-            visitedCells.push(grid[point.y][point.x - 1])
-            grid[point.y][point.x - 1].distance = point.distance + 1
             if (!grid[point.y][point.x - 1].previousCell)
                 grid[point.y][point.x - 1].previousCell = point
+            visitedCells.push(grid[point.y][point.x - 1])
         }
         if (point.x < grid[0].length - 1) {
             //right
-            visitedCells.push(grid[point.y][point.x + 1])
-            grid[point.y][point.x + 1].distance = point.distance + 1
             if (!grid[point.y][point.x + 1].previousCell)
-                grid[point.y][point.x + 1].previousCell = point
+            grid[point.y][point.x + 1].previousCell = point
+            visitedCells.push(grid[point.y][point.x + 1])
         }
         if (point.y > 0) {
             //top
-            visitedCells.push(grid[point.y - 1][point.x])
-            grid[point.y - 1][point.x].distance = point.distance + 1
             if (!grid[point.y - 1][point.x].previousCell)
-                grid[point.y - 1][point.x].previousCell = point
+            grid[point.y - 1][point.x].previousCell = point
+            visitedCells.push(grid[point.y - 1][point.x])
         }
         if (point.y < grid.length - 1) {
             //bottom
-            visitedCells.push(grid[point.y + 1][point.x])
-            grid[point.y + 1][point.x].distance = point.distance + 1
             if (!grid[point.y + 1][point.x].previousCell)
-                grid[point.y + 1][point.x].previousCell = point
+            grid[point.y + 1][point.x].previousCell = point
+            visitedCells.push(grid[point.y + 1][point.x])
         }
         point.visited = true
     }

@@ -5,6 +5,7 @@ import { useState } from 'react'
 import { handleCellActions } from './HelperFunctions/HelperFunctions.js'
 import { generateGrid } from './HelperFunctions/HelperFunctions.js'
 import { dijkstra } from '../../Algorithms/PathFindingAlgorithms/dijkstra'
+import mazeGenerator from '../../Algorithms/MazeGenerator/MazeGenerator'
 
 function PathFindingVisualizer() {
     let [grid, setGrid] = useState([])
@@ -50,7 +51,13 @@ function PathFindingVisualizer() {
     }, [grid])
 
     const findPath = useCallback(() => {
+        console.log(grid);
         dijkstra(grid)
+    }, [grid])
+
+    useEffect(() => {
+        if (!!grid.length)
+            mazeGenerator(grid)
     }, [grid])
 
     return useMemo(() =>

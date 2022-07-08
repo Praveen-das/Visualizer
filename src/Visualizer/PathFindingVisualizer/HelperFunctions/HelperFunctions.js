@@ -62,21 +62,9 @@ export const tracePreviousCell = (cell) => {
     }, 5)
 }
 
-const setPoint = (cell, x, y, columnsX, rowsY, name) => {
-    if (!cell) return
-    if (x === columnsX && y === rowsY) {
-        const point = document.createElement('div')
-        point.id = name
-        point.onpointerdown = () => point.classList.add('animate')
-        ReactDOM.createRoot(point).render(<Marker id='marker' width={25} />)
-        cell?.append(point)
-        return point
-    }
-}
-
 export const generateGrid = () => {
-    let rows = Math.floor(window.innerWidth /15),
-        columns = Math.floor(window.innerHeight /15),
+    let rows = Math.floor(window.innerWidth / 20),
+        columns = Math.floor(window.innerHeight / 20),
         grid = [],
         container = document.getElementById('PathFindingVisualizer')
 
@@ -93,10 +81,8 @@ export const generateGrid = () => {
 }
 
 function createCell(x, y, columns, rows, container) {
-    const cellElement = document.createElement('div')
 
-    let point1 = setPoint(cellElement, x, y, Math.floor((rows / 4)), Math.floor(columns / 2), 'point1')
-    let point2 = setPoint(cellElement, x, y, Math.floor(((rows / 2) * 1.5)), Math.floor(columns / 2), 'point2')
+    const cellElement = document.createElement('div')
 
     cellElement.id = 'cell'
     container.append(cellElement)
@@ -113,4 +99,16 @@ function createCell(x, y, columns, rows, container) {
         deadEnd: false
     }
     return cell
+}
+
+export const setPoint = (cell, name) => {
+    if (!cell) return
+    const point = document.createElement('div')
+    point.id = name
+    point.onpointerdown = () => point.classList.add('animate')
+    ReactDOM.createRoot(point).render(<Marker id='marker' width={25} />)
+    cell.point1 = name === 'point1' ? point : null
+    cell.point2 = name === 'point2' ? point : null
+    cell.cell?.append(point)
+    return point
 }

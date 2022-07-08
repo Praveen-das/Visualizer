@@ -1,63 +1,68 @@
-export default function mazeGenerator(grid) {
-    const START_CELL = grid[0] && grid[0][0]
-    let unvisitedCells = [],
-        visitedCells = [START_CELL]
+export default async function mazeGenerator(grid) {
+    const INITIAL_CELL = grid[0] && grid[0][0]
+    INITIAL_CELL.visited = true
+    let visitedCells = [INITIAL_CELL],
+        stack = [],
+        wall,
+        nextCell
 
     for (let rows of grid) {
         for (let cell of rows) {
-            cell.cell.classList.add('wall')
             cell.wall = true
-            if (cell.point1 || cell.point2) {
-                cell.cell.classList.remove('wall')
-                cell.wall = false
-            }
-            unvisitedCells.push(cell)
         }
     }
 
+    try {
         for (let cell of visitedCells) {
             if (cell == null) break
-            let neighbourCells = getNeighbourCells()
-            function getNeighbourCells() {
-                let nextCell = [
-                    grid[cell.y] && grid[cell.y][cell.x - 1],
-                    grid[cell.y] && grid[cell.y][cell.x + 1],
-                    grid[cell.y + 1] && grid[cell.y + 1][cell.x],
-                    grid[cell.y - 1] && grid[cell.y - 1][cell.x]
-                ]
-                if (nextCell.filter(o => o && (o.visited && !o.deadEnd)).length > 1) {
-                    cell.visited = true
-                    // cell.deadEnd = true
-                    return [cell.previousCell]
-                }
-                if (nextCell.filter(o => o && !o.visited).length === 0) {
-                    cell.deadEnd = true
-                    return [cell.previousCell]
-                }
-                return nextCell.filter(o => o && ((!o.visited && !o.deadEnd)))
-            }
-            let nextCell = neighbourCells[index(neighbourCells.length)]
-            if (!nextCell) {
-                cell.deadEnd = true
-                visitedCells.push(cell.previousCell)
-                continue
-            }
-            if (cell.previousCell?.x === nextCell?.x && cell.previousCell?.y === nextCell?.y) {
-                cell.deadEnd = true
-                visitedCells.push(nextCell)
-                continue
-            }
-            nextCell.previousCell = cell
-            visitedCells.push(nextCell)
-            cell.cell.classList.remove('wall')
             cell.wall = false
             cell.visited = true
+            let neighbourCells = [
+                grid[cell.y + 2] && grid[cell.y + 2][cell.x],
+                grid[cell.y + 2] && grid[cell.y + 2][cell.x],
+                grid[cell.y] && grid[cell.y][cell.x - 2],
+                grid[cell.y] && grid[cell.y][cell.x + 2],
+                grid[cell.y - 2] && grid[cell.y - 2][cell.x]
+            ]
+            neighbourCells = neighbourCells.filter(o => o && !o.visited)
+            nextCell = neighbourCells[index(neighbourCells.length)]
+            if (!nextCell) {
+                visitedCells.push(stack.pop())
+                continue
+            }
+            if (cell.x === nextCell.x) {
+                if ((cell.y - nextCell.y) < 0) {
+                    wall = grid[cell.y + 1][cell.x]
+                } else {
+                    wall = grid[cell.y - 1][cell.x]
+                }
+            }
+            if (cell.y === nextCell.y) {
+                if ((cell.x - nextCell.x) < 0) {
+                    wall = grid[cell.y][cell.x + 1]
+                } else {
+                    wall = grid[cell.y][cell.x - 1]
+                }
+            }
+            stack.push(cell)
+            wall.wall = false
+            nextCell.visited = true
+            visitedCells.push(nextCell)
         }
+    } catch (error) {
+        console.log(error);
+    }
 
-    unvisitedCells.forEach(cell => {
-        cell.visited = false
-        cell.previousCell = null
-    })
+    for (let rows of grid) {
+        for (let cell of rows) {
+            if (cell.wall) {
+                cell.cell.classList.add('wall')
+            }
+            cell.visited = false
+            cell.previousCell = null
+        }
+        await new Promise(res => setTimeout(() => res(), 50))
+    }
 }
 
 function index(maxValue) {

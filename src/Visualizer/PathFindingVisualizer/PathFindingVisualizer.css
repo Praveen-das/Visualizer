@@ -29,11 +29,10 @@ header{
     position: relative;
 }
 .wall{
+    position: absolute;
+    inset: 0;
+    animation: wall 0.1s ease-in-out forwards;
     outline: 1px solid rgb(48, 48, 48) !important;
-    animation: wall 0.2s ease-in-out forwards;
-}
-.none{
-    animation: removewall 0.1s forwards !important;
 }
 
 @keyframes wall{

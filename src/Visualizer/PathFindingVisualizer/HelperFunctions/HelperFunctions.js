@@ -8,7 +8,7 @@ export const handleCellActions = (element, action) => {
     switch (action) {
         case 'DRAW_WALL':
             if (element.point1 || element.point2) return
-            element.cell.classList.add('wall')
+            // element.cell.classList.add('wall')
             element.wall = true
             break
         case 'REMOVE_WALL':
@@ -73,19 +73,17 @@ export const generateGrid = () => {
     for (let y = 0; y < columns; y++) {
         const cells = []
         for (let x = 0; x < rows; x++) {
-            cells.push(createCell(x, y, columns, rows, container))
+            cells.push(createCell(x, y, container))
         }
         grid.push(cells)
     }
     return grid
 }
 
-function createCell(x, y, columns, rows, container) {
-
+function createCell(x, y, container) {
     const cellElement = document.createElement('div')
-
     cellElement.id = 'cell'
-    container.append(cellElement)
+    // container.append(cellElement)
     const cell = {
         cell: cellElement,
         point1: point1 ? point1 : null,

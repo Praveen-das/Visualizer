@@ -2,7 +2,6 @@ import React, { useCallback, useMemo, useRef } from 'react'
 import './PathFindingVisualizer.css'
 import { useEffect } from 'react'
 import { useState } from 'react'
-import { handleCellActions, setPoint } from './HelperFunctions/HelperFunctions.js'
 import { generateGrid } from './HelperFunctions/HelperFunctions.js'
 import { dijkstra } from '../../Algorithms/PathFindingAlgorithms/dijkstra'
 import mazeGenerator from '../../Algorithms/MazeGenerator/MazeGenerator'
@@ -10,79 +9,29 @@ import Cell from './Cell'
 
 function PathFindingVisualizer() {
     let [grid, setGrid] = useState([])
+    const [p1, setP1] = useState()
+    const [p2, setP2] = useState()
     const action = useRef('DRAW_WALL')
     const active = useRef(false)
+    let previousCell = useRef()
 
     useEffect(() => {
-        window.onresize = () => setGrid(generateGrid())
         setGrid(generateGrid())
     }, [])
 
     useEffect(() => {
-        if (!grid.length) return
-        // window.onpointerdown = (e) => e.button === 0 && (active.current = true)
-        // window.onpointerup = () => {
-        //     document.getElementById('point1')?.classList.remove('animate')
-        //     document.getElementById('point2')?.classList.remove('animate')
-        //     action.current = 'DRAW_WALL'
-        //     active.current = false
-        // }
+        window.onpointerup = () => {
+            action.current = 'DRAW_WALL'
+            active.current = false
+            previousCell.current = null
+        }
 
         onkeydown = (e) => e.key === 'Control' && (action.current = 'REMOVE_WALL')
         onkeyup = () => {
             active.current = false
             action.current = 'DRAW_WALL'
         }
-
-        for (let rows of grid) {
-            for (let cell of rows) {
-                cell.cell.onpointerdown = (e) => {
-                    if (e.button !== 0)
-                        return
-                    if (cell.point1)
-                        action.current = 'MOVE_POINT1'
-                    if (cell.point2)
-                        action.current = 'MOVE_POINT2'
-                    handleCellActions(cell, action.current)
-                }
-                cell.cell.onpointerenter = () => {
-                    active.current && handleCellActions(cell, action.current)
-                }
-            }
-        }
-    }, [grid])
-
-    const setPoints = useCallback(() => {
-        let p1x = random(0, grid[0]?.length / 2)
-        let p1y = random(0, grid.length - 1)
-        let p2x = random(grid[0]?.length / 2, grid[0]?.length - 1)
-        let p2y = random(0, grid.length - 1)
-
-        for (let y = 0; y < grid.length; y++) {
-            for (let x = 0; x < grid[0].length; x++) {
-                if (x === p1x && y === p1y) {
-                    if (grid[y][x].wall) {
-                        p1x++
-                        p1y++
-                        continue
-                    }
-                    setPoint(grid[y][x], 'point1')
-                }
-                if (x === p2x && y === p2y) {
-                    if (grid[y][x].wall) {
-                        p2x++
-                        p2y++
-                        continue
-                    }
-                    setPoint(grid[y][x], 'point2')
-                }
-            }
-        }
-    }, [grid])
-
-    useEffect(() => {
-        setPoints()
-    }, [setPoints])
+    }, [])
 
     const generateMaze = useCallback(async () => {
         if (!grid.length) return
@@ -99,8 +48,7 @@ function PathFindingVisualizer() {
             }
         }
         await mazeGenerator(grid)
-        setPoints()
-    }, [grid, setPoints])
+    }, [grid])
 
     const findPath = useCallback(() => {
         dijkstra(grid)
@@ -131,10 +79,50 @@ function PathFindingVisualizer() {
         }
     }, [grid])
 
-    const pointerEvents = (cell, element) => {
-        element.classList.add('wall')
-        cell.wall = true
-    }
+    const pointerEvents = useCallback((cell) => {
+        if (cell.point1)
+            action.current = 'MOVE_POINT1'
+        if (cell.point2)
+            action.current = 'MOVE_POINT2'
+
+        switch (action.current) {
+            case 'MOVE_POINT1':
+                if (cell.wall) return
+                if (cell.point2) return
+                if (previousCell.current == null) return previousCell.current = cell
+                if ((cell.x === previousCell.current.x && cell.y === previousCell.current.y)) return
+                cell.cell.append(previousCell.current.point1)
+                cell.point1 = previousCell.current.point1
+                previousCell.current.point1 = null
+                previousCell.current = cell
+                break;
+            case 'MOVE_POINT2':
+                if (cell.wall) return
+                if (cell.point1) return
+                if (previousCell.current == null) return previousCell.current = cell
+                if ((cell.x === previousCell.current.x && cell.y === previousCell.current.y)) return
+                cell.cell.append(previousCell.current.point2)
+                cell.point2 = previousCell.current.point2
+                previousCell.current.point2 = null
+                previousCell.current = cell
+                break;
+            case 'REMOVE_WALL':
+                cell.cell.classList.remove('wall')
+                cell.wall = false
+                break;
+            case 'DRAW_WALL':
+                cell.cell.classList.add('wall')
+                cell.wall = true
+                break;
+            default:
+                break;
+        }
+    }, [])
+
+    useEffect(() => {
+        setP1({ x: random(0, grid[0]?.length / 2), y: random(0, grid.length - 1) })
+        setP2({ x: random(grid[0]?.length / 2, grid[0]?.length - 1), y: random(0, grid.length - 1) })
+    }, [grid])
 
     return useMemo(() =>
         <>
@@ -144,6 +132,7 @@ function PathFindingVisualizer() {
                 <button onClick={() => handleActions('reset')} id='PFV_BUTTON'>RESET</button>
                 <button onClick={() => handleActions('clearWalls')} id='PFV_BUTTON'>CLEAR WALLS</button>
             </header>
+            
             <div id="PathFindingVisualizer">
                 {
                     grid?.map((rows) =>
@@ -151,18 +140,22 @@ function PathFindingVisualizer() {
                             <Cell
                                 cell={cell}
                                 key={index}
-                                onpointerdown={(e, element) => {
+                                onpointerdown={(cell) => {
                                     active.current = true
-                                    pointerEvents(e, element)
+                                    return pointerEvents(cell)
                                 }}
-                                onpointermove={(e, element) => active.current && pointerEvents(e, element)}
-                                onpointerup={(e) => active.current = false}
+                                onpointerenter={(cell) => {
+                                    if (active.current && (cell.point1 || cell.point2)) return
+                                    active.current && pointerEvents(cell)
+                                }}
+                                point1={cell.x === p1.x && cell.y === p1.y}
+                                point2={cell.x === p2.x && cell.y === p2.y}
                             />
                         )
                     )
                 }
             </div>
-        </>, [generateMaze, handleActions, grid, findPath]
+        </>, [generateMaze, handleActions, grid, findPath, p1, p2, pointerEvents]
     )
 }
 

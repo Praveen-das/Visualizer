@@ -20,6 +20,7 @@ export const handleCellActions = (element, action) => {
         case 'MOVE_POINT1':
             if (element.wall) return
             if (element.point2) return
+
             if (point1 != null) {
                 if ((point1.x === element.x && point1.y === element.y)) return
                 element.cell.append(point1.point1)
@@ -80,14 +81,11 @@ export const generateGrid = () => {
     return grid
 }
 
-function createCell(x, y, container) {
-    const cellElement = document.createElement('div')
-    cellElement.id = 'cell'
-    // container.append(cellElement)
+function createCell(x, y) {
     const cell = {
-        cell: cellElement,
-        point1: point1 ? point1 : null,
-        point2: point2 ? point2 : null,
+        cell: null,
+        point1: null,
+        point2: null,
         wall: null,
         visited: false,
         x,

@@ -1,71 +1,44 @@
 import ReactDOM from 'react-dom/client';
 import { ReactComponent as Marker } from '../../../Assets/Icons/marker.svg'
 
-let point1 = null,
-    point2 = null
-
-export const handleCellActions = (element, action) => {
+export const handleCellActions = (cell, previousCell, action) => {
     switch (action) {
-        case 'DRAW_WALL':
-            if (element.point1 || element.point2) return
-            // element.cell.classList.add('wall')
-            element.wall = true
-            break
-        case 'REMOVE_WALL':
-            if (!element.wall) return
-            if (element.point1 || element.point2) return
-            element.cell.classList.remove('wall')
-            element.wall = null
-            break
         case 'MOVE_POINT1':
-            if (element.wall) return
-            if (element.point2) return
-
-            if (point1 != null) {
-                if ((point1.x === element.x && point1.y === element.y)) return
-                element.cell.append(point1.point1)
-                element.point1 = point1.point1
-                point1.point1 = null
-                point1 = element
-            } else {
-                point1 = element
-            }
-            break
+            if (cell.wall) return
+            if (cell.point2) return
+            if (previousCell.current == null) return previousCell.current = cell
+            if ((cell.x === previousCell.current.x && cell.y === previousCell.current.y)) return
+            cell.cell.append(previousCell.current.point1)
+            cell.point1 = previousCell.current.point1
+            previousCell.current.point1 = null
+            previousCell.current = cell
+            break;
         case 'MOVE_POINT2':
-            if (element.wall) return
-            if (element.point1) return
-            if (element.visited) return
-            if (point2 != null) {
-                if ((point2.x === element.x && point2.y === element.y)) return
-                element.cell.append(point2.point2)
-                element.point2 = point2.point2
-                point2.point2 = null
-                point2 = element
-            } else {
-                point2 = element
-            }
-            return element
+            if (cell.wall) return
+            if (cell.point1) return
+            if (previousCell.current == null) return previousCell.current = cell
+            if ((cell.x === previousCell.current.x && cell.y === previousCell.current.y)) return
+            cell.cell.append(previousCell.current.point2)
+            cell.point2 = previousCell.current.point2
+            previousCell.current.point2 = null
+            previousCell.current = cell
+            break;
+        case 'REMOVE_WALL':
+            cell.cell.classList.remove('wall')
+            cell.wall = false
+            break;
+        case 'DRAW_WALL':
+            cell.cell.classList.add('wall')
+            cell.wall = true
+            break;
         default:
             break;
     }
 }
 
-export const tracePreviousCell = (cell) => {
-    setTimeout(() => {
-        const shortestPath = document.createElement('div')
-        shortestPath.className = 'shortestPath'
-        if (cell.point1) {
-            cell.cell.append(shortestPath)
-            return
-        }
-        tracePreviousCell(cell.previousCell)
-        cell.cell.append(shortestPath)
-    }, 5)
-}
-
 export const generateGrid = () => {
-    let rows = Math.floor(window.innerWidth / 20),
-        columns = Math.floor(window.innerHeight / 20),
+    let rows = Math.floor(window.innerWidth / 15),
+        columns = Math.floor(document.querySelector('#PathFindingVisualizer').clientHeight / 15),
         grid = [],
         container = document.getElementById('PathFindingVisualizer')
 
@@ -74,37 +47,76 @@ export const generateGrid = () => {
     for (let y = 0; y < columns; y++) {
         const cells = []
         for (let x = 0; x < rows; x++) {
-            cells.push(createCell(x, y, container))
+            const cell = {
+                wall: null,
+                visited: false,
+                x,
+                y,
+                previousCell: null,
+                distance: 1,
+                deadEnd: false
+            }
+
+            cells.push(cell)
         }
         grid.push(cells)
     }
     return grid
 }
 
-function createCell(x, y) {
-    const cell = {
-        cell: null,
-        point1: null,
-        point2: null,
-        wall: null,
-        visited: false,
-        x,
-        y,
-        previousCell: null,
-        distance: 1,
-        deadEnd: false
+export const generatePointer = (grid, type) => {
+    let px = random(0, grid[0]?.length - 1)
+    let py = random(0, grid.length - 1)
+
+    for (let rows of grid) {
+        for (let cell of rows) {
+            if (cell.x === px && cell.y === py) {
+                if (cell.wall) {
+                    px++
+                    py++
+                    continue
+                }
+                const point = document.createElement('div')
+                point.id = type ? type : 'point1'
+                ReactDOM.createRoot(point).render(<Marker id='marker' width={25} />)
+                cell.cell.append(point)
+                cell[type] = point
+            }
+        }
     }
-    return cell
+
 }
 
-export const setPoint = (cell, name) => {
-    if (!cell) return
-    const point = document.createElement('div')
-    point.id = name
-    point.onpointerdown = () => point.classList.add('animate')
-    ReactDOM.createRoot(point).render(<Marker id='marker' width={25} />)
-    cell.point1 = name === 'point1' ? point : null
-    cell.point2 = name === 'point2' ? point : null
-    cell.cell?.append(point)
-    return point
+export function clearElement(grid, element) {
+    for (let rows of grid) {
+        for (let cell of rows) {
+            if (element === 'wall')
+                if (cell.wall) {
+                    cell.cell.classList.remove('wall')
+                    cell.wall = false
+                }
+            if (element === 'path')
+                Array.from(cell.cell.children).forEach(elm => {
+                    if (elm.className === 'shortestPath')
+                        elm.remove()
+                    if (elm.className === 'visited')
+                        elm.remove()
+                })
+            if (element === 'all') {
+                Array.from(cell.cell.children).forEach(elm => {
+                    elm.remove()
+                })
+                cell.cell.classList.remove('wall')
+                cell.wall = false
+                cell.point1 = null
+                cell.point2 = null
+            }
+            cell.visited = false
+            cell.previousCell = null
+        }
+    }
+}
+
+function random(min, max) {
+    return Math.floor(Math.random() * (max - min) + min)
 }

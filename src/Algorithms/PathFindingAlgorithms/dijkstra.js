@@ -1,5 +1,3 @@
-import { tracePreviousCell } from "../../Visualizer/PathFindingVisualizer/HelperFunctions/HelperFunctions"
-
 export const dijkstra = (grid) => {
     const visitedCells = []
     let animations = []
@@ -16,6 +14,7 @@ export const dijkstra = (grid) => {
         if (point.wall) continue
         if (point.point2) {
             animations.push(point)
+            point.visited = true
             break
         }
         animations.push(point)
@@ -58,4 +57,17 @@ export const dijkstra = (grid) => {
         }, 5 * i)
     }
 
+}
+
+const tracePreviousCell = (cell) => {
+    setTimeout(() => {
+        const shortestPath = document.createElement('div')
+        shortestPath.className = 'shortestPath'
+        if (cell.point1) {
+            cell.cell.append(shortestPath)
+            return
+        }
+        tracePreviousCell(cell.previousCell)
+        cell.cell.append(shortestPath)
+    }, 5)
 }
